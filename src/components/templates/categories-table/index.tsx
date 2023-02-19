@@ -28,7 +28,7 @@ const CategoriesTable: React.FC = () => {
         q: debouncedSearchTerm,
         offset: offset,
         limit,
-        // expand: "products", // can't expand products currently, returns error
+        // expand: "products", // muh: can't expand products currently. Returns error
       },
       { keepPreviousData: true }
     )
