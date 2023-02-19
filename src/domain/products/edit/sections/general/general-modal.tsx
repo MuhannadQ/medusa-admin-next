@@ -69,6 +69,10 @@ const GeneralModal = ({ product, open, onClose }: Props) => {
           ? data.organize.collection.value
           : null,
         // @ts-ignore
+        categories: data.organize.categories
+          ? data.organize.categories.map((c) => ({ id: c.value }))
+          : null,
+        // @ts-ignore
         tags: data.organize.tags
           ? data.organize.tags.map((t) => ({ value: t }))
           : null,
@@ -134,6 +138,9 @@ const getDefaultValues = (product: Product): GeneralFormWrapper => {
     organize: {
       collection: product.collection
         ? { label: product.collection.title, value: product.collection.id }
+        : null,
+      categories: product.categories
+        ? product.categories.map((c) => ({ label: c.name, value: c.id }))
         : null,
       type: product.type
         ? { label: product.type.value, value: product.type.id }

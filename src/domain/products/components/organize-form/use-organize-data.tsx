@@ -1,5 +1,6 @@
 import { useAdminCollections, useAdminProductTypes } from "medusa-react"
 import { useMemo } from "react"
+import { useAdminCategories } from "../../../../services/categories/queries"
 
 const useOrganizeData = () => {
   const { product_types } = useAdminProductTypes(undefined, {
@@ -7,6 +8,7 @@ const useOrganizeData = () => {
     refetchOnWindowFocus: true,
   })
   const { collections } = useAdminCollections()
+  const { product_categories } = useAdminCategories()
 
   const productTypeOptions = useMemo(() => {
     return (
@@ -26,9 +28,19 @@ const useOrganizeData = () => {
     )
   }, [collections])
 
+  const categoryOptions = useMemo(() => {
+    return (
+      product_categories?.map(({ id, name }) => ({
+        value: id,
+        label: name,
+      })) || []
+    )
+  }, [product_categories])
+
   return {
     productTypeOptions,
     collectionOptions,
+    categoryOptions,
   }
 }
 

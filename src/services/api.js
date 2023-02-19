@@ -347,6 +347,49 @@ export default {
     },
   },
 
+  categories: {
+    create(payload) {
+      const path = `/admin/product-categories`
+      return medusaRequest("POST", path, payload)
+    },
+
+    retrieve(id) {
+      const path = `/admin/product-categories/${id}`
+      return medusaRequest("GET", path)
+    },
+
+    list(search = {}) {
+      const clean = removeNullish(search)
+      const params = Object.keys(clean)
+        .map((k) => `${k}=${search[k]}`)
+        .filter((s) => !!s)
+        .join("&")
+
+      const path = `/admin/product-categories${params && `?${params}`}`
+      return medusaRequest("GET", path)
+    },
+
+    update(categoryId, update) {
+      const path = `/admin/product-categories/${categoryId}`
+      return medusaRequest("POST", path, update)
+    },
+
+    delete(id) {
+      const path = `/admin/product-categories/${id}`
+      return medusaRequest("DELETE", path)
+    },
+
+    addProducts(id, payload) {
+      const path = `/admin/product-categories/${id}/products/batch`
+      return medusaRequest("POST", path, payload)
+    },
+
+    removeProducts(id, payload) {
+      const path = `/admin/product-categories/${id}/products/batch`
+      return medusaRequest("DELETE", path, payload)
+    },
+  },
+
   orders: {
     create(order) {
       const path = `/admin/orders`

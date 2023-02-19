@@ -12,6 +12,7 @@ import useOrganizeData from "./use-organize-data"
 export type OrganizeFormType = {
   type: Option | null
   collection: Option | null
+  categories: Option[] | null
   tags: string[] | null
 }
 
@@ -21,7 +22,8 @@ type Props = {
 
 const OrganizeForm = ({ form }: Props) => {
   const { control, path, setValue } = form
-  const { productTypeOptions, collectionOptions } = useOrganizeData()
+  const { productTypeOptions, collectionOptions, categoryOptions } =
+    useOrganizeData()
 
   const typeOptions = productTypeOptions
 
@@ -68,6 +70,25 @@ const OrganizeForm = ({ form }: Props) => {
                 value={value}
                 placeholder="Choose a collection"
                 isClearable
+              />
+            )
+          }}
+        />
+      </div>
+      <div className="mb-large">
+        <Controller
+          name={path("categories")}
+          control={control}
+          render={({ field: { value, onChange } }) => {
+            return (
+              <NextSelect
+                label="Categories"
+                onChange={onChange}
+                options={categoryOptions}
+                value={value}
+                placeholder="Choose categories"
+                isClearable
+                isMulti
               />
             )
           }}

@@ -10,7 +10,9 @@ import BodyCard from "../../../components/organisms/body-card"
 import TableViewHeader from "../../../components/organisms/custom-table-header"
 import ExportModal from "../../../components/organisms/export-modal"
 import AddCollectionModal from "../../../components/templates/collection-modal"
+import AddCategoryModal from "../../../components/templates/category-modal"
 import CollectionsTable from "../../../components/templates/collections-table"
+import CategoriesTable from "../../../components/templates/categories-table"
 import ProductTable from "../../../components/templates/product-table"
 import useNotification from "../../../hooks/use-notification"
 import useToggleState from "../../../hooks/use-toggle-state"
@@ -18,8 +20,9 @@ import { getErrorMessage } from "../../../utils/error-messages"
 import ImportProducts from "../batch-job/import"
 import NewProduct from "../new"
 import { PollingContext } from "../../../context/polling"
+import { useAdminCreateCategory } from "../../../services/categories"
 
-const VIEWS = ["products", "collections"]
+const VIEWS = ["products", "categories", "collections"]
 
 const Overview = () => {
   const navigate = useNavigate()
@@ -36,11 +39,15 @@ const Overview = () => {
 
   const notification = useNotification()
 
+  const createCategory = useAdminCreateCategory()
   const createCollection = useAdminCreateCollection()
 
   useEffect(() => {
     if (location.search.includes("?view=collections")) {
       setView("collections")
+    }
+    if (location.search.includes("?view=categories")) {
+      setView("categories")
     }
   }, [location])
 
@@ -52,6 +59,8 @@ const Overview = () => {
     switch (view) {
       case "products":
         return <ProductTable />
+      case "categories":
+        return <CategoriesTable />
       default:
         return <CollectionsTable />
     }
@@ -88,6 +97,19 @@ const Overview = () => {
             </Button>
           </div>
         )
+      case "categories":
+        return (
+          <div className="flex space-x-2">
+            <Button
+              variant="secondary"
+              size="small"
+              onClick={() => setShowNewCategory(!showNewCategory)}
+            >
+              <PlusIcon size={20} />
+              New Category
+            </Button>
+          </div>
+        )
       default:
         return (
           <div className="flex space-x-2">
@@ -104,7 +126,9 @@ const Overview = () => {
     }
   }
 
+  const [showNewCategory, setShowNewCategory] = useState(false)
   const [showNewCollection, setShowNewCollection] = useState(false)
+
   const {
     open: openExportModal,
     close: closeExportModal,
@@ -116,6 +140,17 @@ const Overview = () => {
     close: closeImportModal,
     state: importModalOpen,
   } = useToggleState(false)
+
+  const handleCreateCategory = async (data) => {
+    await createCategory.mutateAsync(data, {
+      onSuccess: ({ product_category }) => {
+        notification("Success", "Successfully created category", "success")
+        navigate(`/a/product-categories/${product_category.id}`)
+        setShowNewCategory(false)
+      },
+      onError: (err) => notification("Error", getErrorMessage(err), "error"),
+    })
+  }
 
   const handleCreateCollection = async (data, colMetadata) => {
     const metadata = colMetadata
@@ -180,6 +215,12 @@ const Overview = () => {
           </BodyCard>
         </div>
       </div>
+      {showNewCategory && (
+        <AddCategoryModal
+          onClose={() => setShowNewCategory(!showNewCategory)}
+          onSubmit={handleCreateCategory}
+        />
+      )}
       {showNewCollection && (
         <AddCollectionModal
           onClose={() => setShowNewCollection(!showNewCollection)}

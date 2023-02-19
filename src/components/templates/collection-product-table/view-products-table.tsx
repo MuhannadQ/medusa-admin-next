@@ -11,11 +11,13 @@ import TableContainer from "../../organisms/table-container"
 import useViewProductColumns from "./use-view-product-columns"
 
 type ViewProductsTableProps = {
+  isCategory?: boolean
   collectionId: string
   refetchCollection: () => void
 }
 
 const ViewProductsTable: React.FC<ViewProductsTableProps> = ({
+  isCategory = false,
   collectionId,
   refetchCollection,
 }) => {
@@ -31,7 +33,9 @@ const ViewProductsTable: React.FC<ViewProductsTableProps> = ({
 
   const { isLoading, count, products, refetch } = useAdminProducts({
     q: debouncedSearchTerm,
-    collection_id: [collectionId],
+    ...(isCategory
+      ? { category_id: [collectionId] }
+      : { collection_id: [collectionId] }),
     limit: limit,
     offset,
   })
