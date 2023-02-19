@@ -468,6 +468,7 @@ const createEmptyVariant = (
         option_id: option.id,
         option: null,
       })) || [],
+    metadata: { metadata: [] },
   }
 }
 

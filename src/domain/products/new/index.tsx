@@ -1,6 +1,6 @@
 import { AdminPostProductsReq } from "@medusajs/medusa"
 import { useAdminCreateProduct } from "medusa-react"
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { useForm, useWatch } from "react-hook-form"
 import { useNavigate } from "react-router-dom"
 import Button from "../../../components/fundamentals/button"
@@ -8,6 +8,7 @@ import FeatureToggle from "../../../components/fundamentals/feature-toggle"
 import CrossIcon from "../../../components/fundamentals/icons/cross-icon"
 import FocusModal from "../../../components/molecules/modal/focus-modal"
 import Accordion from "../../../components/organisms/accordion"
+import Metadata, { MetadataField } from "../../../components/organisms/metadata"
 import { useFeatureFlag } from "../../../context/feature-flag"
 import useNotification from "../../../hooks/use-notification"
 import { FormImage, ProductStatus } from "../../../types/shared"
@@ -54,6 +55,7 @@ const NewProduct = ({ onClose }: Props) => {
   const { mutate } = useAdminCreateProduct()
   const navigate = useNavigate()
   const notification = useNotification()
+  const [metadata, setMetadata] = useState<MetadataField[]>([])
 
   const watchedCustoms = useWatch({
     control: form.control,
@@ -88,6 +90,10 @@ const NewProduct = ({ onClose }: Props) => {
         data,
         publish,
         isFeatureEnabled("sales_channels")
+      )
+      payload.metadata = metadata.reduce(
+        (acc, next) => ({ ...acc, [next.key]: next.value }),
+        {}
       )
 
       if (data.media?.images?.length) {
@@ -253,6 +259,16 @@ const NewProduct = ({ onClose }: Props) => {
                   <CustomsForm form={nestedForm(form, "customs")} />
                 </div>
               </Accordion.Item>
+              <Accordion.Item title="Metadata" value="metadata">
+                <p className="inter-base-regular text-grey-50">
+                  Used for additional specifications
+                </p>
+                <Metadata
+                  setMetadata={setMetadata}
+                  metadata={metadata}
+                  heading=""
+                />
+              </Accordion.Item>
               <Accordion.Item title="Thumbnail" value="thumbnail">
                 <p className="inter-base-regular text-grey-50 mb-large">
                   Used to represent your product during checkout, social sharing
@@ -330,6 +346,10 @@ const createPayload = (
       mid_code: v.customs.mid_code || undefined,
       origin_country: v.customs.origin_country?.value || undefined,
       manage_inventory: v.stock.manage_inventory,
+      metadata: v.metadata.metadata.reduce(
+        (acc, next) => ({ ...acc, [next.key]: next.value }),
+        {}
+      ),
     })),
     // @ts-ignore
     status: publish ? ProductStatus.PUBLISHED : ProductStatus.DRAFT,

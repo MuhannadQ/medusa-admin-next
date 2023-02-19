@@ -6,6 +6,7 @@ import { getErrorStatus } from "../../../utils/get-error-status"
 import AttributesSection from "./sections/attributes"
 import GeneralSection from "./sections/general"
 import MediaSection from "./sections/media"
+import MetadataSection from "./sections/metadata"
 import RawSection from "./sections/raw"
 import ThumbnailSection from "./sections/thumbnail"
 import VariantsSection from "./sections/variants"
@@ -56,6 +57,7 @@ const Edit = () => {
           <GeneralSection product={product} />
           <VariantsSection product={product} />
           <AttributesSection product={product} />
+          <MetadataSection product={product} />
           <RawSection product={product} />
         </div>
         <div className="flex flex-col col-span-4 gap-y-xsmall">

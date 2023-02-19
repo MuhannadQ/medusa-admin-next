@@ -95,7 +95,8 @@ const EditVariantScreen = ({ variant, product }: Props) => {
 export const createUpdatePayload = (
   data: EditFlowVariantFormType
 ): AdminPostProductsProductVariantsVariantReq => {
-  const { customs, dimensions, prices, options, general, stock } = data
+  const { customs, dimensions, prices, options, general, stock, metadata } =
+    data
 
   const priceArray = prices.prices
     .filter((price) => typeof price.amount === "number")
@@ -107,6 +108,11 @@ export const createUpdatePayload = (
         id: price.id || undefined,
       }
     })
+
+  const payloadMetadata = metadata.metadata.reduce(
+    (acc, next) => ({ ...acc, [next.key]: next.value }),
+    {}
+  )
 
   return {
     // @ts-ignore
@@ -125,6 +131,7 @@ export const createUpdatePayload = (
       option_id: option.id,
       value: option.value,
     })),
+    metadata: payloadMetadata,
   }
 }
 

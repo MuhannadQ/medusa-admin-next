@@ -2,6 +2,7 @@ import { Product, ProductVariant } from "@medusajs/medusa"
 import { useForm } from "react-hook-form"
 import Button from "../../../../../components/fundamentals/button"
 import Modal from "../../../../../components/molecules/modal"
+import { MetadataField } from "../../../../../components/organisms/metadata"
 import { countries } from "../../../../../utils/countries"
 import EditFlowVariantForm, {
   EditFlowVariantFormType,
@@ -114,6 +115,13 @@ export const getEditVariantDefaultValues = (
     ? { label: country.name, value: country.alpha2 }
     : null
 
+  const metadata: MetadataField[] = []
+  Object.entries(variant.metadata ?? {}).map(([key, value]) => {
+    if (typeof value === "string") {
+      metadata.push({ key, value })
+    }
+  })
+
   return {
     general: {
       title: variant.title,
@@ -148,6 +156,7 @@ export const getEditVariantDefaultValues = (
       })),
     },
     options,
+    metadata: { metadata },
   }
 }
 

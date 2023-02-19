@@ -108,6 +108,7 @@ const getDefaultValues = (product: Product): EditFlowVariantFormType => {
       hs_code: null,
       origin_country: null,
     },
+    metadata: { metadata: [] },
   }
 }
 
@@ -125,6 +126,11 @@ export const createAddPayload = (
         region_id: price.region_id,
       }
     })
+
+  const payloadMetadata = data.metadata.metadata.reduce(
+    (acc, next) => ({ ...acc, [next.key]: next.value }),
+    {}
+  )
 
   return {
     // @ts-ignore
@@ -145,6 +151,7 @@ export const createAddPayload = (
       option_id: option.id,
       value: option.value,
     })),
+    metadata: payloadMetadata,
   }
 }
 

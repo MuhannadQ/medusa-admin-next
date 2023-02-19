@@ -10,6 +10,9 @@ import { PricesFormType } from "../../prices-form"
 import VariantGeneralForm, {
   VariantGeneralFormType,
 } from "../variant-general-form"
+import VariantMetadataForm, {
+  VariantMetadataFormType,
+} from "../variant-metadata-form"
 import VariantPricesForm from "../variant-prices-form"
 import VariantStockForm, { VariantStockFormType } from "../variant-stock-form"
 
@@ -28,6 +31,7 @@ export type EditFlowVariantFormType = {
   }[]
   customs: CustomsFormType
   dimensions: DimensionsFormType
+  metadata: VariantMetadataFormType
 }
 
 type Props = {
@@ -89,6 +93,9 @@ const EditFlowVariantForm = ({ form }: Props) => {
             </div>
           </div>
         </div>
+      </Accordion.Item>
+      <Accordion.Item title="Metadata" value="metadata">
+        <VariantMetadataForm form={nestedForm(form, "metadata")} />
       </Accordion.Item>
       <Accordion.Item title="Pricing" value="pricing">
         <VariantPricesForm form={nestedForm(form, "prices")} />
